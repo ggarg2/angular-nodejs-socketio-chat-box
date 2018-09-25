@@ -1,0 +1,10 @@
+<h1 mat-dialog-title>Hi</h1>
+<div mat-dialog-content>
+  <p>What's your name ?</p>
+  <mat-form-field>
+    <input matInput [(ngModel)]="userName">
+  </mat-form-field>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="sendUsername()" cdkFocusInitial>Ok</button>
+</div>

@@ -1,0 +1,75 @@
+.sidenav-container {
+  height: 100%;
+}
+
+.sidenav {
+  width: 200px;
+}
+
+.mat-toolbar.mat-primary {
+  position: sticky;
+  top: 0;
+}
+
+.chat-footer-container {
+      /* position: fixed; */
+    bottom: 2px;
+    width: 100%;
+    padding-left: 0px;
+}
+
+.chat-footer-container-card {
+  margin: 10px;
+}
+
+
+.chat-input {
+  padding-top: 20px;
+  width: 50%; 
+}
+
+.send-button {
+  margin-left: 20px;
+}
+
+.nav-item {
+  border: 1px solid lightgrey;
+}
+
+.from-user-message {
+  text-align: right;
+}
+
+.message-container {
+  padding-left: 10px;
+}
+
+.message-container-card {
+  height: 368px;
+  overflow-y: auto;
+  margin: 10px;
+}
+
+.example-spacer {
+  flex: 1 1 auto;
+}
+
+.selected-chat-user {
+  background-color: burlywood !important;
+}
+
+.my-msg {
+  /* background-color: gold;
+  font-size: 18px;
+  border-radius: 26px;
+  padding: 15px;
+  color: seagreen; */
+}
+
+.to-msg {
+  /* background-color: gold;
+  font-size: 18px;
+  border-radius: 26px;
+  padding: 15px;
+  color: seagreen; */
+}

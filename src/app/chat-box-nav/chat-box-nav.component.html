@@ -1,0 +1,60 @@
+<mat-sidenav-container class="sidenav-container">
+  <mat-sidenav #drawer class="sidenav" fixedInViewport="true" [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
+    [mode]="(isHandset$ | async) ? 'over' : 'side'" [opened]="!(isHandset$ | async)">
+    <mat-toolbar color="primary">Users</mat-toolbar>
+    <mat-nav-list>
+      <a mat-line *ngIf="listOfUsers.length == 0">
+        No online users.
+      </a>
+      <ng-template ngFor let-user [ngForOf]="listOfUsers">
+        <a [ngClass]="{ 'selected-chat-user': user.id == toUser?.id }" class="nav-item" mat-line (click)="selectReciever(user)" mat-list-item href="#">
+          <span *ngIf="userMessages[user.id]"
+           matBadge="{{getNotificationCount(user)}}" matBadgeOverlap="false"
+          >
+            {{user.name}}
+          </span>
+          <span *ngIf="!userMessages[user.id]"
+          >
+            {{user.name}}
+          </span>
+        </a>
+      </ng-template>
+    </mat-nav-list>
+  </mat-sidenav>
+  <mat-sidenav-content>
+    <mat-toolbar color="primary">
+      <button type="button" aria-label="Toggle sidenav" mat-icon-button (click)="drawer.toggle()" *ngIf="isHandset$ | async">
+        <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
+      </button>
+      <span *ngIf="myuser">Welcome {{myuser.name}}, Total number of online users : {{listOfUsers.length}}</span>
+      <span class="example-spacer"></span>
+      <span>Chat Box </span>
+    </mat-toolbar>
+    <!-- Add Content Here -->
+    <div class="message-container">
+      <mat-card class="message-container-card">
+        <div *ngIf="toUser">
+            Now you can send message to {{ toUser?.name }}
+        </div>
+        <div *ngIf="toUser && userMessages[toUser.id]">
+          <div *ngFor="let message of userMessages[toUser.id]" [ngClass]="{ 'from-user-message': message.from.id != toUser.id }">
+            <span [ngClass]="{ 'my-msg': message.from.id != toUser.id, 'to-msg': message.from.id == toUser.id }">
+              {{message.from.name}} : {{message.content}}
+            </span>
+          </div>
+        </div>
+      </mat-card>
+    </div> 
+
+    <div class="chat-footer-container">
+      <mat-card class="chat-footer-container-card">
+        <mat-form-field class="chat-input">
+          <input matInput #inputMessage maxlength="140" placeholder="Type your message" [(ngModel)]="messageContent"
+            (keyup.enter)="sendMessage(messageContent)">
+          <mat-hint align="end">{{inputMessage.value.length}}/140</mat-hint>
+        </mat-form-field>
+        <button (click)="sendMessage(messageContent)" class="send-button" mat-raised-button color="accent">Send</button>
+      </mat-card>
+    </div>
+  </mat-sidenav-content>
+</mat-sidenav-container>
