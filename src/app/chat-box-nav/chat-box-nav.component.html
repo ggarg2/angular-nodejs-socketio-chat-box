@@ -54,7 +54,7 @@
             placeholder="Type your message" 
             [(ngModel)]="messageContent"
             (keyup.enter)="sendMessageOnEnter(messageContent)"
-            (keyup)="sendTypings(messageContent)"
+            (keyup)="sendTypings($event, messageContent)"
           >
           <mat-hint align="end">{{inputMessage.value.length}}/140</mat-hint>
         </mat-form-field>
