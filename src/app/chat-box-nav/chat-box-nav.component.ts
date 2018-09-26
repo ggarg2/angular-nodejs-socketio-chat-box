@@ -35,6 +35,8 @@ export class ChatBoxNavComponent {
 
   selectedMessages: any = [];
 
+  typingMessage: Message = {};
+
   isHandset$: Observable<boolean> = this.breakpointObserver
     .observe(Breakpoints.Handset)
     .pipe(map(result => result.matches));
@@ -109,8 +111,75 @@ export class ChatBoxNavComponent {
         }
     });
 
+    this.socketService.onEvent(Event.RECIEVE_MSG_ON_ENTER + '-' + this.myuser.id)
+      .subscribe((msg: Message) => {
+        console.log('got message  ', msg);
+        if (this.toUser && msg.from.id == this.toUser.id) {
+          msg.isNew = false;
+        }
+        if (this.userMessages[msg.from.id]) {
+          for (const message of this.userMessages[msg.from.id]) {
+            console.log(`message.id is ${message.id} and msg.id is ${msg.id}`);
+            if (message.id == msg.id) {
+              message.content = msg.content;
+              return;
+            }
+          }
+          console.log('before pushing');
+          this.userMessages[msg.from.id].push(msg);
+        } else {
+          this.userMessages[msg.from.id] = [];
+          this.userMessages[msg.from.id].push(msg);
+        }
+    });
+
+    this.socketService.onEvent(Event.RECIEVE_TYPINGS + '-' + this.myuser.id)
+      .subscribe((msg: Message) => {
+        console.log('got message  ', msg);
+        if (this.toUser && msg.from.id == this.toUser.id) {
+          msg.isNew = false;
+        }
+        if (this.userMessages[msg.from.id]) {
+          for (const message of this.userMessages[msg.from.id]) {
+            console.log(`message.id is ${message.id} and msg.id is ${msg.id}`);
+            if (message.id == msg.id) {
+              message.content = msg.content;
+              return;
+            }
+          }
+          console.log('before pushing');
+          this.userMessages[msg.from.id].push(msg);
+        } else {
+          this.userMessages[msg.from.id] = [];
+          this.userMessages[msg.from.id].push(msg);
+        }
+    });
+
     this.sendNotification(Action.INIT_USER_LIST, 'Initialize user list');
     this.sendNotification(Action.JOINED, 'User is joined successfully!!');
+  }
+
+  sendMessageOnEnter(msg: string) {
+    const message: Message = {
+      id: this.typingMessage.id,
+      from: this.myuser,
+      action: 'sendmessage',
+      content: msg,
+      to: this.toUser,
+      isNew: true,
+      isTyping: false,
+    };
+
+    if (this.userMessages[this.toUser.id]) {
+      this.userMessages[this.toUser.id].push(message);
+    } else {
+      this.userMessages[this.toUser.id] = [];
+      this.userMessages[this.toUser.id].push(message);
+    }
+
+    this.socketService.send('sendmessageOnEnter', message);
+    this.messageContent = '';
+    this.typingMessage = {};
   }
 
   sendMessage(msg: string) {
@@ -120,6 +189,7 @@ export class ChatBoxNavComponent {
       content: msg,
       to: this.toUser,
       isNew: true,
+      isTyping: false,
     };
 
     if (this.userMessages[this.toUser.id]) {
@@ -131,6 +201,28 @@ export class ChatBoxNavComponent {
 
     this.socketService.send('sendmessage', message);
     this.messageContent = '';
+    this.typingMessage = {};
+  }
+
+  sendTypings(msg: string) {
+     if (msg == null || msg === undefined || msg.trim() === '' ) {
+       return;
+     }
+     this.typingMessage = {
+      id: this.typingMessage.id,
+      from: this.myuser,
+      action: 'sendTypings',
+      content: msg,
+      to: this.toUser,
+      isNew: true,
+      isTyping: true,
+    };
+
+    if (!this.typingMessage.id) {
+      this.typingMessage.id = this.getRandomId();
+    }
+
+    this.socketService.send('sendTypings', this.typingMessage);
   }
 
   public sendNotification(action: any, content: any): void {

@@ -49,8 +49,13 @@
     <div class="chat-footer-container">
       <mat-card class="chat-footer-container-card">
         <mat-form-field class="chat-input">
-          <input matInput #inputMessage maxlength="140" placeholder="Type your message" [(ngModel)]="messageContent"
-            (keyup.enter)="sendMessage(messageContent)">
+          <input 
+            matInput #inputMessage maxlength="140" 
+            placeholder="Type your message" 
+            [(ngModel)]="messageContent"
+            (keyup.enter)="sendMessageOnEnter(messageContent)"
+            (keyup)="sendTypings(messageContent)"
+          >
           <mat-hint align="end">{{inputMessage.value.length}}/140</mat-hint>
         </mat-form-field>
         <button (click)="sendMessage(messageContent)" class="send-button" mat-raised-button color="accent">Send</button>

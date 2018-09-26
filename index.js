@@ -19,9 +19,19 @@ io.on('connection', function(socket){
         io.emit('initUserList-'+msg.from.id, listOfUsers);
     });
 
+    socket.on('sendmessageOnEnter', function(msg){
+        console.log('send message to .', JSON.stringify(msg));
+        io.emit('recieveMessageOnEnter-'+msg.to.id, msg);
+    });
+
     socket.on('sendmessage', function(msg){
         console.log('send message to .', JSON.stringify(msg));
         io.emit('recieveMessage-'+msg.to.id, msg);
+    });
+
+    socket.on('sendTypings', function(msg){
+        console.log('send message to .', JSON.stringify(msg));
+        io.emit('recieveTypings-'+msg.to.id, msg);
     });
 
     socket.on('joined', function(msg){
